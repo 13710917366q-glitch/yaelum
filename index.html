@@ -258,19 +258,64 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  // 导航平滑滚动
-  document.querySelectorAll('.navbar a').forEach(anchor => {
+  // ====="甫飘的模式导入＊是展展集动）
+  const sections = ['begin', 'showreel', 'projects', 'about'];
+  let currentIdx = 0;
+  let isScrolling = false;
+
+  function goToSection(idx) {
+    if (idx < 0 || idx >= sections.length || isScrolling) return;
+    if (idx === currentIdx) return;
+    isScrolling = true;
+    currentIdx = idx;
+    const target = document.getElementById(sections[idx]);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    updateNavActive(idx);
+    setTimeout(() => { isScrolling = false; }, 1000);
+  }
+
+  function updateNavActive(idx) {
+    document.querySelectorAll('.navbar a').forEach(a => a.classList.remove('active'));
+    const links = document.querySelectorAll('.navbar a');
+    if (links[idx]) links[idx].classList.add('active');
+  }
+
+  // 初姈高选单翻如BEGIN
+  updateNavActive(0);
+
+  // 满足缩餅（每凹窗写none */
+  window.addEventListener('wheel', (e) => {
+    if (isScrolling) return;
+    if (e.deltaY > 0) {
+      if (currentIdx < sections.length - 1) goToSection(currentIdx + 1);
+    } else {
+      if (currentIdx > 0) goToSection(currentIdx - 1);
+    }
+  }, { passive: true });
+
+  // 导航栏条击(可盔有杘闪门，前系主务选项结)
+  document.querySelectorAll('.navbar a').forEach((anchor, idx) => {
     anchor.addEventListener('click', function(e){
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if(target) target.scrollIntoView({ behavior: 'smooth' });
+      const href = this.getAttribute('href');
+      const targetId = href.substring(1);
+      const targetIdx = sections.indexOf(targetId);
+      if (targetIdx !== -1) {
+        if (targetIdx === currentIdx) return;
+        isScrolling = true;
+        currentIdx = targetIdx;
+        const target = document.getElementById(targetId);
+        if(target) target.scrollIntoView({ behavior: 'smooth' });
+        updateNavActive(targetIdx);
+        setTimeout(() => { isScrolling = false; }, 1000);
+      }
     });
   });
 
   // 禁止拖拽
   document.querySelectorAll('img, video').forEach(el => el.addEventListener('dragstart', e => e.preventDefault()));
 
-  // Showreel 动画（简单示例）
+  // Showreel 动画
   const showreel = document.getElementById('showreel');
   const bgA = document.getElementById('bg-a');
   const coverContainer = document.getElementById('cover-container');
@@ -290,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const showreelClose = showreelModal.querySelector('.close-btn');
   const showreelContent = showreelModal.querySelector('.modal-content');
 
-  // Mobile-friendly: prevent taps inside the content from closing the modal
   showreelContent.addEventListener('click', e => e.stopPropagation());
   showreelContent.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
   coverContainer.addEventListener('click', () => {
@@ -323,7 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalContent = modal.querySelector('.modal-content');
   let modalIframe = null;
 
-  // Mobile-friendly: prevent taps inside the content from closing the modal
   modalContent.addEventListener('click', e => e.stopPropagation());
   modalContent.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
   const modalImg = document.getElementById('modal-img');
@@ -357,7 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 关闭 Projects 弹窗
   const closeModal = () => {
     if(modalIframe) modalIframe.src='';
     modal.style.display='none';
