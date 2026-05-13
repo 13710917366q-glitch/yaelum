@@ -269,9 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
     isScrolling = true;
     currentIdx = idx;
     const target = document.getElementById(sections[idx]);
-    if (target) target.scrollIntoView({ behavior: 'auto' });
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
     updateNavActive(idx);
-    setTimeout(() => { isScrolling = false; }, 500);
+    setTimeout(() => { isScrolling = false; }, 800);
   }
 
   function updateNavActive(idx) {
@@ -283,14 +283,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初姈高选单翻如BEGIN
   updateNavActive(0);
 
-  // 满足缩餅（PROJECTS内部可无滚动，帎色S进有练用反页)
+  // 满足缩餅（PROJECTS内部可无滚动，帎色S进机练用反页)
   window.addEventListener('wheel', (e) => {
     if (isScrolling) return;
 
     const currentSection = sections[currentIdx];
 
     if (currentSection === 'projects') {
-      // PROJECTS 内部：检测是在顶郩/曲部进觉
+      // PROJECTS 内部：检测是在顶郩柲部进觉
       const el = document.getElementById('projects');
       const top = el.getBoundingClientRect().top;
       const bottom = el.getBoundingClientRect().bottom;
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } else {
-      // 其他 section（BEGIN / SHOWREE / ABOUT）：缩餅  
+      // 其他 section（BEGIN / SHOWREEL / ABOUT）：缩餅  
       e.preventDefault();
       if (e.deltaY > 0) {
         if (currentIdx < sections.length - 1) goToSection(currentIdx + 1);
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, { passive: false });
 
-  // 导航栏指击（可盔有杘闪门，前系主务选项结)
+  // 导航栏条击(可盔有杘闪门，前系主务选项结)
   document.querySelectorAll('.navbar a').forEach((anchor, idx) => {
     anchor.addEventListener('click', function(e){
       e.preventDefault();
@@ -331,9 +331,9 @@ document.addEventListener('DOMContentLoaded', () => {
         isScrolling = true;
         currentIdx = targetIdx;
         const target = document.getElementById(targetId);
-        if(target) target.scrollIntoView({ behavior: 'auto' });
+        if(target) target.scrollIntoView({ behavior: 'smooth' });
         updateNavActive(targetIdx);
-        setTimeout(() => { isScrolling = false; }, 500);
+        setTimeout(() => { isScrolling = false; }, 800);
       }
     });
   });
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const coverContainer = document.getElementById('cover-container');
   const coverImg = document.getElementById('cover-img');
 
-  let bgShown = false, coverShown = false;
+  let b{Shown = false, coverShown = false;
   const checkVisible = () => {
     const rect = showreel.getBoundingClientRect();
     if(rect.top < window.innerHeight*0.35 && !bgShown){ bgA.style.opacity=1; bgShown=true; }
