@@ -14,13 +14,13 @@ body {
   /* 去掉整屏滚动 */
   scroll-snap-type: none;
   overflow-y: scroll;
-  scroll-behavior: smooth; /* 保留平滑滚动 */
+  /* scroll-behavior 移院，由JS管理 */
   background-color: #ffffff;
 }
 
 section {
   height: 100vh; /* 默认一屏高 */
-  /* 去掉 scroll-snap */
+  /* 医掉 scroll-snap */
 }
 
 #projects {
@@ -52,7 +52,7 @@ section {
   z-index: 0;
 }
 
-/* 半透明遮罩 */
+/* 半透明遮湰 */
 .video-overlay {
   position: absolute;
   top: 0; left: 0;
@@ -78,7 +78,7 @@ section {
 }
 
 .hero-text p {
-  margin: 0.2em 0 0 0;  /* 段落上方留点空隙 */
+  margin: 0.2em 0 0 0;  /* 段落上方絙点空隙 */
   padding: 0;
   line-height: 1.2;
   font-size: 1.2rem;
@@ -87,7 +87,7 @@ section {
 
 
 
-/* ----------------- 导航栏 ----------------- */
+/* ----------------- 导航栏 ------------------ */
 .navbar {
   position: fixed; /* 固定在顶部 */
   top: 0;
