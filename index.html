@@ -269,9 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
     isScrolling = true;
     currentIdx = idx;
     const target = document.getElementById(sections[idx]);
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    if (target) target.scrollIntoView({ behavior: 'auto' });
     updateNavActive(idx);
-    setTimeout(() => { isScrolling = false; }, 1000);
+    setTimeout(() => { isScrolling = false; }, 500);
   }
 
   function updateNavActive(idx) {
@@ -301,14 +301,12 @@ document.addEventListener('DOMContentLoaded', () => {
           e.preventDefault();
           goToSection(currentIdx + 1);
         }
-        // 您则不做仆价一杄，浏历器默认滚动
       } else {
         // 徙上接：可有到顶郩可斾进到 SHOWREEL
         if (top >= -5 && currentIdx > 0) {
           e.preventDefault();
           goToSection(currentIdx - 1);
         }
-        // 储剽卖了，值出器默认滚动
       }
     } else {
       // 其他 section（BEGIN / SHOWREE / ABOUT）：缩餅  
@@ -333,9 +331,9 @@ document.addEventListener('DOMContentLoaded', () => {
         isScrolling = true;
         currentIdx = targetIdx;
         const target = document.getElementById(targetId);
-        if(target) target.scrollIntoView({ behavior: 'smooth' });
+        if(target) target.scrollIntoView({ behavior: 'auto' });
         updateNavActive(targetIdx);
-        setTimeout(() => { isScrolling = false; }, 1000);
+        setTimeout(() => { isScrolling = false; }, 500);
       }
     });
   });
