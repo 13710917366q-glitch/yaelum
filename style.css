@@ -129,6 +129,10 @@ body > section {
   color: #0077ff;
 }
 
+.navbar a.active {
+  color: #0077ff;
+}
+
 
 /* ----------------- 模块通用 ----------------- */
 body > section {
@@ -141,14 +145,14 @@ body > section {
   padding-top: 60px;
 }
 
-/* hero, works: 是 */
+/* hero, works:  是 */
 
 .works {
   background: #f1f1f1; /* 纯白 */
 }
 
 section {
-  background: #f1f1f1; /* 其他 section 也统一白色 */
+  background: #f1f1f1; /* 具他 section 也统一白色 */
 }
 
 
@@ -178,7 +182,7 @@ section {
   height: 100%;
   object-fit: cover;
   z-index: 2;
-  pointer-events: none; /* 鼠标穿透，低防挡 hover */
+  pointer-events: none; /* 鼠标穿透，位鲅 hover */
   transform: scale(0.15) translateX(-4800px) translateY(10px);
 }
 
@@ -194,7 +198,7 @@ section {
   z-index: 10;
 }
 
-/* 弹窗内容内嵌 B 站 iframe */
+/* 弹窗内宸内嵌 B 站 iframe */
 /* 弹窗内容 */
 .modal-content {
   position: relative;
@@ -224,7 +228,6 @@ section {
   color: #fff;
   cursor: pointer;
 }
-
 
 
 #cover-container {
@@ -271,7 +274,7 @@ section {
 /* 网格布局 */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 三列，每列占1份 */
+  grid-template-columns: repeat(3, 1fr); /* 三列，每列占1 佤 */
   gap: 20px;
   width: 100%;   /* 撑满屏幕 */
   padding: 20px; /* 四周留白 */
@@ -316,7 +319,7 @@ section {
 .overlay-top {
   display: flex;
   align-items: center;
-  gap: 5px; /* ▶和标题的间距 */
+  gap: 5px; /( ▶和标题的间距 */
 }
 
 .overlay-top h3 {
@@ -381,7 +384,7 @@ section {
 }
 
 #about {
-  height: auto;       /* 高度自适应内容 */
+  height: auto;       /* 高度臩适应内容 */
   padding: 20px 20px 120px 20px; /* 上 20px，右 20px，下 80px，左 20px */
 }
 
