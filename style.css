@@ -18,16 +18,11 @@ body {
   background-color: #ffffff;
 }
 
-section {
-  height: 100vh; /* 默认一屏高 */
-  /* 去掉 scroll-snap */
-}
-
 #projects {
-  height: auto; /* 不固定高度 */
-  min-height: 100vh; /* 保证至少一屏高 */
-  overflow: visible; /* 取消内部滚动 */
-  padding: 100px 20px; /* 给顶部导航留空间 */
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  padding: 100px 20px;
 }
 
 
@@ -141,15 +136,12 @@ body > section {
   padding-top: 60px;
 }
 
-/* hero, works: �景 */
-
-
 .works {
-  background: #f1f1f1; /* 纯白 */
+  background: #f1f1f1;
 }
 
 section {
-  background: #f1f1f1; /* 其他 section 也统一白色 */
+  background: #f1f1f1;
 }
 
 
@@ -165,10 +157,23 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;             
+  opacity: 0;
   transition: opacity 1.5s ease, transform 0.8s ease;
   z-index: 0; /* 最底层 */
   transform: translateX(0);
+}
+
+#bg-solid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.8s ease;
 }
 
 #skills-0 {
@@ -178,7 +183,7 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: 2;
+  z-index: 4;
   pointer-events: none; /* 鼠标穿透，不阻挡 hover */
   transform: scale(0.15) translateX(-4800px) translateY(10px);
 }
@@ -192,10 +197,9 @@ section {
   background: rgba(0,0,0,0.7);
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 100;
 }
 
-/* 弹窗内容内嵌 B 站 iframe */
 /* 弹窗内容 */
 .modal-content {
   position: relative;
@@ -229,9 +233,10 @@ section {
 
 
 #cover-container {
-  width: calc(100% * 9 / 11);  /* 宽度为 section 的 9/11 */
+  width: 88%;  /* 宽度为 section 的 88/100 */
   margin: 0 auto 50px auto;    /* 水平居中 */
   position: relative;
+  z-index: 3;
 }
 
 #cover-img {
@@ -326,59 +331,20 @@ section {
 }
 
 .work-card .overlay .work-desc {
-  font-size: 12px;
+  font-size: 1rem;
   line-height: 1.2;
   margin-top: 5px;
+  text-align: left;
 }
 
 .work-card .overlay .play-btn {
   font-size: 20px;
 }
 
-.work-card .overlay .work-desc {
-  font-size: 1rem;  /* 固定字体大小 */
-  line-height: 1.2;
-  margin-top: 5px;
-  text-align: left; /* 左对齐 */
-}
-
-
-/* 弹窗 */
-.modal {
-  display:none;
-  position:fixed; top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.8);
-  justify-content:center; align-items:center;
-  z-index:100;
-}
-
-.modal-content {
-  position: relative;
-  max-width: 1500px;
-  width: 90%;
-}
-
-.modal-content video, 
-.modal-content img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-
-.close-btn {
-  position:absolute; top:-20px; right:-20px;
-  font-size:2rem; color:#fff;
-  cursor:pointer;
-}
 
 #projects h2 {
-  text-align: left;   /* 左对齐 */
-  margin-left: 0px;  /* 微调左右位置 */
-  margin-right: 0px;
-  margin-top: -50px;
-  margin-bottom: 10px;
+  text-align: left;
+  margin: -50px 0 10px 0;
 }
 
 #about {
