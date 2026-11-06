@@ -1,0 +1,11 @@
+{
+  "name": "yaelum-video-guard",
+  "main": "worker.mjs",
+  "account_id": "f3f4da13417f74a710ad358e7526469b",
+  "compatibility_date": "2026-11-06",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": {"enabled": false},
+  "vars": {"VIDEO_ENABLED": "0"},
+  "r2_buckets": [{"binding": "VIDEOS", "bucket_name": "yaelum-portfolio-video-private"}]
+}

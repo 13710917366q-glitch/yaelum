@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yaelum 的个人作品集，展示视频设计、动效、三维、字体设计与 AI 自动化项目。">
+  <meta name="theme-color" content="#e9f7ff">
   <title>Celeste Yao Portfolio</title>
-  <link rel="stylesheet" href="style.css?v=1.0.6">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://yaelumworks.art/">
+  <link rel="stylesheet" href="style.css?v=1.4.0">
   </head>
 <body>
   
 <!-- 顶部导航栏 -->
-<nav class="navbar">
+<nav class="navbar" aria-label="主导航">
   <ul>
     <li><a href="#begin">BEGIN</a></li>
     <li><a href="#showreel">SHOWREEL</a></li>
@@ -20,7 +25,7 @@
 
 <!-- 视频开场 -->
 <section id="begin" class="video-section">
-  <img id="intro-image" src="photo/intro.png" alt="开场图片">
+  <img id="intro-image" src="photo/intro.webp" alt="" width="1920" height="1080" fetchpriority="high">
   <div class="video-overlay"></div>
   
   <div class="hero">
@@ -36,20 +41,20 @@
 
 <!-- Showreel -->
 <section id="showreel">
-  <img id="bg-a" src="photo/bg_a.png" alt="背景图片">
+  <img id="bg-a" src="photo/bg_a.webp" alt="" width="1920" height="952" loading="lazy" decoding="async">
   <div id="bg-solid-overlay"></div>
-  <img id="skills-0" src="photo/skills_00000.png" alt="背景图片">
+  <img id="skills-0" src="photo/skills_00000.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
 
   <!-- 封面图容器 -->
-  <div id="cover-container">
-    <img id="cover-img" src="photo/intro.png" alt="Showreel Cover">
+  <div id="cover-container" role="button" tabindex="0" aria-label="播放 Showreel" aria-haspopup="dialog" aria-controls="video-modal">
+    <img id="cover-img" src="photo/intro.webp" alt="Showreel 视频封面" width="1920" height="1080" loading="lazy" decoding="async">
     <div id="cover-overlay"><span>Click to play</span></div>
   </div>
 
   <!-- Showreel 弹窗 -->
-  <div id="video-modal" class="modal">
+  <div id="video-modal" class="modal" role="dialog" aria-modal="true" aria-label="Showreel 播放器" aria-hidden="true">
     <div class="modal-content">
-      <span class="close-btn">&times;</span>
+      <button class="close-btn" type="button" aria-label="关闭 Showreel">&times;</button>
       <!-- iframe 动态生成 -->
     </div>
   </div>
@@ -61,7 +66,7 @@
   <div class="grid">
     <!-- New Project Placeholder -->
     <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="10">
-      <img src="photo/cover/coverp0.png" alt="New Project">
+      <img src="photo/cover/coverp0.webp" alt="《剑网3》与《刺客信条：王朝》联动 PV 封面" width="1200" height="900" loading="lazy" decoding="async">
       <div class="overlay">
         <div class="overlay-top">
           <span class="play-btn">▶</span>
@@ -73,7 +78,7 @@
 
     <!-- 视频作品 1-9 -->
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="1">
-  <img src="photo/cover/coverp1.png" alt="Work 1">
+  <img src="photo/cover/coverp1.webp" alt="动画曲线练习封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -84,7 +89,7 @@
 </div>
 
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="2">
-  <img src="photo/cover/coverp2.png" alt="Work 2">
+  <img src="photo/cover/coverp2.webp" alt="粒子与动画曲线练习封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -94,8 +99,8 @@
   </div>
 </div>
 
-<div class="work-card" data-type="image" data-src="photo/cover/coverp3.png">
-  <img src="photo/cover/coverp3.png" alt="Work 3">
+<div class="work-card" data-type="image" data-src="photo/cover/coverp3.webp">
+  <img src="photo/cover/coverp3.webp" alt="排版训练作品" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -106,7 +111,7 @@
 </div>
 
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="3">
-  <img src="photo/cover/coverp4.png" alt="Work 4">
+  <img src="photo/cover/coverp4.webp" alt="静止系 MAD 打光练习封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -117,7 +122,7 @@
 </div>
 
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="4">
-  <img src="photo/cover/coverp5.png" alt="Work 5">
+  <img src="photo/cover/coverp5.webp" alt="三维元素融合练习封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -128,7 +133,7 @@
 </div>
 
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="5">
-  <img src="photo/cover/coverp6.png" alt="Work 6">
+  <img src="photo/cover/coverp6.webp" alt="三维元素融合练习二封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -139,7 +144,7 @@
 </div>
 
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="6">
-  <img src="photo/cover/coverp7.png" alt="Work 7">
+  <img src="photo/cover/coverp7.webp" alt="动画曲线练习二封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -150,7 +155,7 @@
 </div>
 
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="7">
-  <img src="photo/cover/coverp8.png" alt="Work 8">
+  <img src="photo/cover/coverp8.webp" alt="上海音乐皨 only 展 4.0 PV 封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -161,7 +166,7 @@
 </div>
 
 <div class="work-card" data-type="video" data-bvid="BV19KpezdExJ" data-page="8">
-  <img src="photo/cover/coverp9.png" alt="Work 9">
+  <img src="photo/cover/coverp9.webp" alt="分镜练习封面" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -171,8 +176,8 @@
   </div>
 </div>
 
-<div class="work-card" data-type="image" data-src="photo/cover/coverp10.png">
-  <img src="photo/cover/coverp10.png" alt="Work 10">
+<div class="work-card" data-type="image" data-src="photo/cover/coverp10.webp">
+  <img src="photo/cover/coverp10.webp" alt="三维场景制作作品" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -182,8 +187,8 @@
   </div>
 </div>
 
-<div class="work-card" data-type="image" data-src="photo/cover/coverp11.png">
-  <img src="photo/cover/coverp11.png" alt="Work 11">
+<div class="work-card" data-type="image" data-src="photo/cover/coverp11.webp">
+  <img src="photo/cover/coverp11.webp" alt="排版练习二作品" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -193,8 +198,8 @@
   </div>
 </div>
 
-<div class="work-card" data-type="image" data-src="photo/cover/coverp12v2.png">
-  <img src="photo/cover/coverp12.png" alt="Work 12">
+<div class="work-card" data-type="image" data-src="photo/cover/coverp12v2.webp">
+  <img src="photo/cover/coverp12.webp" alt="静止系漫画素材打光作品" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -204,8 +209,8 @@
   </div>
 </div>
 
-<div class="work-card" data-type="image" data-src="photo/cover/coverp13v2.png">
-  <img src="photo/cover/coverp13.png" alt="Work 13">
+<div class="work-card" data-type="image" data-src="photo/cover/coverp13v2.webp">
+  <img src="photo/cover/coverp13.webp" alt="字体设计作品一" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -215,8 +220,8 @@
   </div>
 </div>
 
-<div class="work-card" data-type="image" data-src="photo/cover/coverp14v2.png">
-  <img src="photo/cover/coverp14.png" alt="Work 14">
+<div class="work-card" data-type="image" data-src="photo/cover/coverp14v2.webp">
+  <img src="photo/cover/coverp14.webp" alt="字体设计作品二" width="1200" height="900" loading="lazy" decoding="async">
   <div class="overlay">
     <div class="overlay-top">
       <span class="play-btn">▶</span>
@@ -228,18 +233,19 @@
 
 </section>
 
+
 <!-- 弹窗 -->
-<div id="modal" class="modal">
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-label="作品预览" aria-hidden="true">
   <div class="modal-content">
-    <span class="close-btn">&times;</span>
-    <img id="modal-img" src="" alt="">
+    <button class="close-btn" type="button" aria-label="关闭作品预览">&times;</button>
+    <img id="modal-img" src="" alt="作品大图预览" decoding="async">
     <!-- iframe 动态生成 -->
   </div>
 </div>
 
 <section id="about">
   <div class="about-container">
-    <img src="photo/avatar.jpg" alt="头像" class="about-avatar">
+    <img src="photo/avatar.webp" alt="Yaelum 的头像" class="about-avatar" width="512" height="512" loading="lazy" decoding="async">
     <div class="about-text">
       <h2>About Me</h2>
       <p class="small-text">邮箱：yaelum@qq.com</p>
@@ -253,9 +259,11 @@
 
 <!-- Footer -->
 <footer>
-  <p>© 2025 Celeste Yao</p>
+  <p>© 2026 Celeste Yao</p>
 </footer>
 
-<script src="script.js"></script>
+<script src="r2-fallback.js?v=1.4.0"></script>
+<script src="portfolio-player.js?v=1.4.0"></script>
+<script src="script.js?v=1.4.0"></script>
 </body>
 </html>

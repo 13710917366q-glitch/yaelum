@@ -1,116 +1,77 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lastFocusedElement = null;
+
+  const syncBodyLock = () => {
+    const hasOpenModal = Array.from(document.querySelectorAll('.modal'))
+      .some(item => item.style.display === 'flex');
+    document.body.classList.toggle('modal-open', hasOpenModal);
+  };
+
+  const willChangeTokens = new WeakMap();
+
+  const runOptimizedTransition = (element, properties, update, fallbackMs = 1800) => {
+    if (!element) return;
+
+    const token = Symbol('will-change');
+    willChangeTokens.set(element, token);
+    element.style.willChange = properties;
+
+    const cleanup = () => {
+      if (willChangeTokens.get(element) !== token) return;
+      element.style.willChange = 'auto';
+      willChangeTokens.delete(element);
+    };
+
+    element.addEventListener('transitionend', cleanup, { once: true });
+    window.setTimeout(cleanup, fallbackMs);
+    window.requestAnimationFrame(update);
+  };
 
   // ═══════════════════════════════════════
   //  Navigation
   // ═══════════════════════════════════════
 
-  document.querySelectorAll('.navbar a').forEach(anchor => {
+  const navLinks = Array.from(document.querySelectorAll('.navbar a'));
+
+  navLinks.forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
+      if (target) {
+        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      }
     });
   });
 
-  // ═══════════════════════════════════════
-  //  Scroll system
-  // ═══════════════════════════════════════
-
-  const sections = Array.from(document.querySelectorAll('section'));
-  const projectsSection = document.getElementById('projects');
-  const WHEEL_THRESHOLD = 35;
-  const BOUNDARY_RATIO = 0.03;
-
-  let isSnapScrolling = false;
-  let wheelAccumulator = 0;
-  let wheelResetTimer = null;
-
-  const getBoundaryZone = (section) => section.offsetHeight * BOUNDARY_RATIO;
-
-  const isAtTop = (section) => {
-    const rect = section.getBoundingClientRect();
-    return Math.abs(rect.top) <= getBoundaryZone(section);
-  };
-
-  const isAtBottom = (section) => {
-    const rect = section.getBoundingClientRect();
-    return Math.abs(rect.bottom - window.innerHeight) <= getBoundaryZone(section);
-  };
-
-  const getCurrentSectionIndex = () => {
-    let best = 0;
-    let bestScore = Infinity;
-    sections.forEach((section, i) => {
-      const rect = section.getBoundingClientRect();
-      if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-        const score = Math.abs(rect.top);
-        if (score < bestScore) { bestScore = score; best = i; }
+  const setActiveNav = sectionId => {
+    navLinks.forEach(link => {
+      const isCurrent = link.getAttribute('href') === `#${sectionId}`;
+      if (isCurrent) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
       }
     });
-    return best;
   };
 
-  const resetAccumulator = () => {
-    wheelAccumulator = 0;
-    if (wheelResetTimer) { clearTimeout(wheelResetTimer); wheelResetTimer = null; }
-  };
+  const navSections = navLinks
+    .map(link => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
 
-  const snapTo = (target) => {
-    if (!target) return;
-    isSnapScrolling = true;
-    target.scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => { isSnapScrolling = false; }, 900);
-  };
-
-  const handleWheel = function(e) {
-    if (window.innerWidth <= 768) return;
-    if (isSnapScrolling) { e.preventDefault(); return; }
-
-    const idx = getCurrentSectionIndex();
-    const section = sections[idx];
-    const dir = e.deltaY > 0 ? 1 : -1;
-
-    // ── PROJECTS: linear scroll with boundary snapping ──
-    if (section === projectsSection) {
-      const atTop = isAtTop(section);
-      const atBottom = isAtBottom(section);
-
-      if (!atTop && !atBottom) { resetAccumulator(); return; }       // inside → free scroll
-      if (atTop && dir > 0)    { resetAccumulator(); return; }       // enter from top → scroll down
-      if (atBottom && dir < 0) { resetAccumulator(); return; }       // from bottom → scroll up
-      if (atTop && dir < 0) {                                       // top edge ↑ → snap to SHOWREEL
-        e.preventDefault();
-        snapTo(sections[Math.max(idx - 1, 0)]);
-        resetAccumulator();
-        return;
-      }
-      if (atBottom && dir > 0) { resetAccumulator(); return; }      // bottom edge ↓ → linear into ABOUT
-    }
-
-    // ── Transition zone: PROJECTS bottom at viewport, ABOUT detected as current ──
-    if (section !== projectsSection) {
-      const pRect = projectsSection.getBoundingClientRect();
-      const nearBottom = Math.abs(pRect.bottom - window.innerHeight) <= getBoundaryZone(projectsSection);
-      if (nearBottom) { resetAccumulator(); return; }
-    }
-
-    // ── General snap scroll ──
-    const targetIdx = Math.min(Math.max(idx + dir, 0), sections.length - 1);
-    if (targetIdx === idx) { resetAccumulator(); return; }  // no target → free scroll
-
-    e.preventDefault();
-    wheelAccumulator += e.deltaY;
-    if (wheelResetTimer) clearTimeout(wheelResetTimer);
-    wheelResetTimer = setTimeout(resetAccumulator, 150);
-    if (Math.abs(wheelAccumulator) < WHEEL_THRESHOLD) return;
-
-    const target = sections[targetIdx];
-    if (!target) return;
-    resetAccumulator();
-    snapTo(target);
-  };
-
-  window.addEventListener('wheel', handleWheel, { passive: false });
+  if ('IntersectionObserver' in window) {
+    const navObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActiveNav(entry.target.id);
+      });
+    }, {
+      rootMargin: '-32% 0px -58% 0px',
+      threshold: 0
+    });
+    navSections.forEach(section => navObserver.observe(section));
+  } else {
+    setActiveNav('begin');
+  }
 
   // Prevent image/video drag
   document.querySelectorAll('img, video').forEach(el =>
@@ -122,41 +83,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // ═══════════════════════════════════════
 
   const showreelSection = document.getElementById('showreel');
-  const bgA = document.getElementById('bg-a');
-  const bgSolidOverlay = document.getElementById('bg-solid-overlay');
-  const coverImg = document.getElementById('cover-img');
-  let bgShown = false;
-  let coverShown = false;
-  let showreelWasActive = false;
+  const coverContainer = document.getElementById('cover-container');
 
-  const onScrollShowreel = () => {
+  const revealShowreel = () => {
     if (!showreelSection) return;
-    const rect = showreelSection.getBoundingClientRect();
-
-    // Background image fade-in (once)
-    if (!bgShown && rect.top < window.innerHeight * 0.35) {
-      bgA.style.opacity = '1';
-      bgShown = true;
+    if (prefersReducedMotion) {
+      showreelSection.classList.add('is-visible');
+      return;
     }
-    // Cover image fade-in (once)
-    if (!coverShown && rect.top < window.innerHeight * 0.65) {
-      coverImg.style.opacity = '1';
-      coverShown = true;
-    }
-
-    // Solid overlay: enter → 80%→0%, leave → 0%→80%
-    if (!bgSolidOverlay) return;
-    const isActive = rect.top < window.innerHeight * 0.6
-                  && rect.bottom > window.innerHeight * 0.4;
-    if (isActive !== showreelWasActive) {
-      bgSolidOverlay.style.transition = 'opacity 0.8s ease';
-      bgSolidOverlay.style.opacity = isActive ? '0' : '0.8';
-    }
-    showreelWasActive = isActive;
+    runOptimizedTransition(coverContainer, 'opacity, transform', () => {
+      showreelSection.classList.add('is-visible');
+    }, 1000);
   };
 
-  window.addEventListener('scroll', onScrollShowreel, { passive: true });
-  onScrollShowreel();
+  if (showreelSection && 'IntersectionObserver' in window) {
+    const showreelObserver = new IntersectionObserver(entries => {
+      const hasEntered = entries.some(entry => entry.isIntersecting);
+      if (!hasEntered) return;
+      revealShowreel();
+      showreelObserver.disconnect();
+    }, { threshold: 0.22 });
+    showreelObserver.observe(showreelSection);
+  } else {
+    revealShowreel();
+  }
+
+  const warmShowreelImages = () => {
+    document.querySelectorAll('#showreel img').forEach(image => {
+      image.decode?.().catch(() => {});
+    });
+  };
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(warmShowreelImages, { timeout: 1500 });
+  } else {
+    window.setTimeout(warmShowreelImages, 300);
+  }
 
   // ═══════════════════════════════════════
   //  Showreel modal (Bilibili iframe)
@@ -165,34 +127,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const showreelModal = document.getElementById('video-modal');
   const showreelClose = showreelModal?.querySelector('.close-btn');
   const showreelContent = showreelModal?.querySelector('.modal-content');
+  let stopShowreel = () => {};
 
   showreelContent?.addEventListener('click', e => e.stopPropagation());
   showreelContent?.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
 
   const openShowreel = () => {
     if (!showreelModal || !showreelContent) return;
+    lastFocusedElement = document.activeElement;
     showreelModal.style.display = 'flex';
-    let iframe = document.getElementById('showreel-bilibili-iframe');
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.id = 'showreel-bilibili-iframe';
-      iframe.width = '100%';
-      iframe.height = '100%';
-      iframe.frameBorder = '0';
-      iframe.allow = 'autoplay; fullscreen; picture-in-picture';
-      iframe.allowFullscreen = true;
-      showreelContent.appendChild(iframe);
-    }
-    iframe.src = 'https://player.bilibili.com/player.html?bvid=BV19KpezdExJ&page=9&p=9&autoplay=1';
+    showreelModal.setAttribute('aria-hidden', 'false');
+    syncBodyLock();
+    stopShowreel();
+    stopShowreel = window.YaelumPortfolioPlayer(showreelContent, 9, 'BV19KpezdExJ', 'Yaelum Showreel');
+    showreelClose?.focus();
   };
 
   const closeShowreel = () => {
+    if (!showreelModal) return;
     showreelModal.style.display = 'none';
-    const iframe = document.getElementById('showreel-bilibili-iframe');
-    if (iframe) iframe.src = '';
+    showreelModal.setAttribute('aria-hidden', 'true');
+    stopShowreel();
+    syncBodyLock();
+    lastFocusedElement?.focus();
   };
 
-  document.getElementById('cover-container')?.addEventListener('click', openShowreel);
+  coverContainer?.addEventListener('click', openShowreel);
+  coverContainer?.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openShowreel();
+    }
+  });
   showreelClose?.addEventListener('click', closeShowreel);
   showreelModal?.addEventListener('click', e => {
     if (e.target === showreelModal) closeShowreel();
@@ -206,46 +172,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalClose = modal?.querySelector('.close-btn');
   const modalContent = modal?.querySelector('.modal-content');
   const modalImg = document.getElementById('modal-img');
-  let modalIframe = null;
+  let stopWorkPlayer = () => {};
 
   modalContent?.addEventListener('click', e => e.stopPropagation());
   modalContent?.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
 
+  const openWorkCard = card => {
+    if (!modal || !modalContent || !modalImg) return;
+
+    lastFocusedElement = document.activeElement;
+    stopWorkPlayer();
+    if (card.dataset.type === 'video') {
+      modalImg.style.display = 'none';
+      stopWorkPlayer = window.YaelumPortfolioPlayer(modalContent, Number(card.dataset.page || 1), card.dataset.bvid, card.querySelector('h3')?.textContent?.trim() || '作品播放器');
+    } else {
+      modalImg.src = card.dataset.src;
+      modalImg.alt = card.querySelector('img')?.alt || '作品大图预览';
+      modalImg.style.display = 'block';
+    }
+
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    syncBodyLock();
+    modalClose?.focus();
+  };
+
   document.querySelectorAll('.work-card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (!modal || !modalContent || !modalImg) return;
-
-      if (card.dataset.type === 'video') {
-        modalImg.style.display = 'none';
-        if (!modalIframe) {
-          modalIframe = document.createElement('iframe');
-          modalIframe.width = '100%';
-          modalIframe.height = '100%';
-          modalIframe.frameBorder = '0';
-          modalIframe.allow = 'autoplay; fullscreen; picture-in-picture';
-          modalIframe.allowFullscreen = true;
-          modalContent.appendChild(modalIframe);
-        }
-        modalIframe.src = `https://player.bilibili.com/player.html?bvid=${card.dataset.bvid}&page=${card.dataset.page || 1}&p=${card.dataset.page || 1}&autoplay=1`;
-        modalIframe.style.display = 'block';
-      } else {
-        if (modalIframe) modalIframe.style.display = 'none';
-        modalImg.src = card.dataset.src;
-        modalImg.style.display = 'block';
+    const title = card.querySelector('h3')?.textContent?.trim() || '作品';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `打开${title}`);
+    card.setAttribute('aria-haspopup', 'dialog');
+    card.setAttribute('aria-controls', 'modal');
+    card.addEventListener('click', () => openWorkCard(card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openWorkCard(card);
       }
-
-      modal.style.display = 'flex';
     });
   });
 
   const closeWorkModal = () => {
-    if (modalIframe) modalIframe.src = '';
-    if (modal) modal.style.display = 'none';
+    stopWorkPlayer();
+    if (!modal) return;
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    syncBodyLock();
+    lastFocusedElement?.focus();
   };
 
   modalClose?.addEventListener('click', closeWorkModal);
   modal?.addEventListener('click', e => {
     if (e.target === modal) closeWorkModal();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (showreelModal?.style.display === 'flex') {
+      closeShowreel();
+    } else if (modal?.style.display === 'flex') {
+      closeWorkModal();
+    }
   });
 
 });

@@ -1,0 +1,7 @@
+dist/
+.wrangler/
+node_modules/
+.env
+.env.*
+screenshots/
+deployment-evidence/
