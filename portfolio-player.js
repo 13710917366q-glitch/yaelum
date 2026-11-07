@@ -7,6 +7,8 @@
   const source = ['r2','github','bilibili'].includes(requested) ? requested : 'r2';
 
   window.YaelumPortfolioPlayer = (container, page, bvid, title) => {
+    // MP4 files belong to the original Bilibili collection, not to every video's page number.
+    const file = bvid === 'BV19KpezdExJ' ? files[page] : null;
     let disposed = false, media = null, guard = null, kind = null;
     const root = document.createElement('div');
     root.className = 'portfolio-player';
@@ -32,9 +34,9 @@
       if (disposed) return;
       clearMedia(); kind = next; root.dataset.source = next;
       status.textContent = '';
-      switcher.hidden = !files[page];
+      switcher.hidden = !file;
       switcher.textContent = next === 'bilibili' ? '高清播放' : 'B站播放';
-      if (next === 'bilibili' || !files[page]) {
+      if (next === 'bilibili' || !file) {
         kind = 'bilibili'; root.dataset.source = kind;
         const frame = document.createElement('iframe');
         frame.title = title;
@@ -48,7 +50,7 @@
       video.controls = true; video.playsInline = true; video.preload = 'none';
       video.setAttribute('aria-label', title);
       video.dataset.source = next;
-      video.src = `${next === 'r2' ? primaryBase : backupBase}/${files[page]}`;
+      video.src = `${next === 'r2' ? primaryBase : backupBase}/${file}`;
       media = video; root.prepend(video);
       status.textContent = next === 'github' ? '正在加载高清备用…' : '正在加载高清…';
       video.addEventListener('loadedmetadata', () => {
@@ -75,7 +77,7 @@
         } else if (error.name !== 'AbortError') thisGuard.failed(error.message);
       });
     }
-    open(files[page] ? source : 'bilibili');
+    open(file ? source : 'bilibili');
     return () => {
       if (disposed) return;
       disposed = true; clearMedia();

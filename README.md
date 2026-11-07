@@ -7,7 +7,8 @@ Cloudflare Pages 当前通过官方 Wrangler 直接发布；源代码保存在 G
 ## 视频
 
 - 点击作品后才加载视频；页面初始加载不请求 MP4，关闭弹窗清空视频地址并停止下载。
-- 九个现有 MP4 通过 `https://video.yaelumworks.art` 上的 `yaelum-video-guard` 读取私有 R2 桶，未重新编码。
+- Showreel 已更新为 B 站 `BV1y2eA6MENg` 的第 1 分 P（2023–2026 新版，92 秒），直接使用 B 站播放器。旧 `intro.mp4` 保留在存储中，但新版入口不再引用；未把其他视频的 MP4 套到相同分 P 编号上。
+- 其余已有 MP4 的作品通过 `https://video.yaelumworks.art` 上的 `yaelum-video-guard` 读取私有 R2 桶，未重新编码。
 - 高清读取失败或连续 12 秒无进展，切换到原有 GitHub Pages 的相同 MP4，最多回退一次。暂停、播放结束、关闭及浏览器阻止自动播放不触发超时回退。
 - 播放器右上角可手动切换 B 站。尚未找到本地 MP4 的商业 PV 保持 B 站播放。
 - `?source=bilibili` / `?source=github` / `?source=r2` 保留作来源核对入口，公开页面不显示测试面板。

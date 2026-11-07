@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showreelModal.setAttribute('aria-hidden', 'false');
     syncBodyLock();
     stopShowreel();
-    stopShowreel = window.YaelumPortfolioPlayer(showreelContent, 9, 'BV19KpezdExJ', 'Yaelum Showreel');
+    stopShowreel = window.YaelumPortfolioPlayer(showreelContent, 1, 'BV1y2eA6MENg', 'Yaelum Showreel 2023–2026');
     showreelClose?.focus();
   };
 
