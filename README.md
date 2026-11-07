@@ -4,6 +4,12 @@
 
 Cloudflare Pages 当前通过官方 Wrangler 直接发布；源代码保存在 GitHub 的 `codex/yaelumworks-pages` 分支。构建命令为 `node scripts/build.mjs`，输出目录为 `dist`。原来的 `main` 分支与旧版站点保留。GitHub 自动部署尚未启用，推送代码不会自动更新网站。
 
+## 滚动
+
+滚轮在 BEGIN 与 SHOWREEL 之间整页切换，并从 SHOWREEL 整页进入 PROJECTS。PROJECTS 内部及向下进入 ABOUT 按滚轮距离线性平滑移动；ABOUT 向上整页回到 PROJECTS 顶部，PROJECTS 顶部再向上整页返回 SHOWREEL。整页切换吸收同一次手势的后续惯性，连续上滚到 PROJECTS 顶部时先停住，下一次手势再离开。
+
+手机触摸与键盘滚动保留浏览器行为；视频或图片弹窗打开时暂停背景滚动；系统开启“减少动态效果”时取消滚动动画。
+
 ## 视频
 
 - 点击作品后才加载视频；页面初始加载不请求 MP4，关闭弹窗清空视频地址并停止下载。

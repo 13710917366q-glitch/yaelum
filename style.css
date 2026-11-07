@@ -19,6 +19,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* The wheel controller supplies its own timing; avoid a second CSS animation. */
+html.wheel-scroll {
+  scroll-behavior: auto;
+}
+
 body {
   margin: 0;
   max-width: 100%;

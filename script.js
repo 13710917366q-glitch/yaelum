@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let lastFocusedElement = null;
+  let pageScroll = null;
 
   const syncBodyLock = () => {
     const hasOpenModal = Array.from(document.querySelectorAll('.modal'))
       .some(item => item.style.display === 'flex');
     document.body.classList.toggle('modal-open', hasOpenModal);
+    if (hasOpenModal) pageScroll?.stop();
   };
 
   const willChangeTokens = new WeakMap();
@@ -32,6 +34,134 @@ document.addEventListener('DOMContentLoaded', () => {
   //  Navigation
   // ═══════════════════════════════════════
 
+  // Full-page wheel navigation outside Projects; proportional, linear motion
+  // through Projects and down into About. Touch and keyboard remain native.
+  const createPageScroll = () => {
+    const sections = ['begin', 'showreel', 'projects', 'about']
+      .map(id => document.getElementById(id));
+    if (sections.some(section => !section)) return null;
+
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const root = document.documentElement;
+    root.classList.add('wheel-scroll');
+    let frame = 0;
+    let animation = null;
+    let snapLocked = false;
+    let lastWheel = -Infinity;
+    let lastDirection = 0;
+    const gestureGap = 200;
+    const maxScroll = () => Math.max(0, root.scrollHeight - window.innerHeight);
+    const clamp = y => Math.max(0, Math.min(maxScroll(), y));
+    const sectionTop = section => clamp(section.getBoundingClientRect().top + window.scrollY);
+
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      animation = null;
+      snapLocked = false;
+      lastWheel = -Infinity;
+      lastDirection = 0;
+    };
+
+    const animate = (target, mode) => {
+      cancelAnimationFrame(frame);
+      const from = window.scrollY;
+      const to = clamp(target);
+      if (motionPreference.matches || Math.abs(to - from) < 0.5) {
+        window.scrollTo(0, to);
+        frame = 0;
+        animation = null;
+        return;
+      }
+      const duration = mode === 'page' ? 700 : 160;
+      const start = performance.now();
+      animation = {to, mode};
+      const tick = now => {
+        const progress = Math.min(1, (now - start) / duration);
+        const amount = mode === 'page'
+          ? (progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2)
+          : progress;
+        window.scrollTo(0, from + (to - from) * amount);
+        if (progress < 1) {
+          frame = requestAnimationFrame(tick);
+        } else {
+          frame = 0;
+          animation = null;
+        }
+      };
+      frame = requestAnimationFrame(tick);
+    };
+
+    const scrollToSection = section => {
+      stop();
+      snapLocked = true;
+      animate(sectionTop(section), 'page');
+    };
+
+    const hasLocalScroll = (event, direction) => event.composedPath().some(element => {
+      if (!(element instanceof Element) || element === root || element === document.body) return false;
+      if (element.matches('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return true;
+      const scrollable = /^(auto|scroll|overlay)$/.test(getComputedStyle(element).overflowY);
+      return scrollable && element.scrollHeight > element.clientHeight &&
+        (direction < 0 ? element.scrollTop > 0 : element.scrollTop + element.clientHeight < element.scrollHeight - 1);
+    });
+
+    window.addEventListener('wheel', event => {
+      if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey ||
+          !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY) ||
+          document.body.classList.contains('modal-open') || hasLocalScroll(event, Math.sign(event.deltaY))) {
+        stop();
+        return;
+      }
+      if (!event.cancelable) { stop(); return; }
+      event.preventDefault();
+      const now = performance.now();
+      const newGesture = now - lastWheel > gestureGap;
+      lastWheel = now;
+      // Absorb the rest of a wheel/trackpad gesture after a page transition.
+      if (snapLocked) {
+        if (animation || !newGesture) return;
+        snapLocked = false;
+      }
+
+      const direction = Math.sign(event.deltaY);
+      const y = window.scrollY;
+      const [begin, showreel, projects, about] = sections.map(sectionTop);
+      let pageTarget = null;
+      if (y < projects - 2) {
+        if (direction > 0) pageTarget = y < showreel - 2 ? showreel : projects;
+        else pageTarget = y > showreel + 2 ? showreel : begin;
+      } else if (direction < 0 && y >= about - 2) {
+        pageTarget = projects;
+      } else if (direction < 0 && y <= projects + 2) {
+        // Reaching the top while scrolling through Projects stops there first.
+        if (newGesture) pageTarget = showreel;
+        else return;
+      }
+
+      if (pageTarget !== null) {
+        snapLocked = true;
+        animate(pageTarget, 'page');
+      } else {
+        const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+        const pending = animation?.mode === 'linear' && direction === lastDirection ? animation.to : y;
+        const delta = Math.max(-window.innerHeight, Math.min(window.innerHeight, event.deltaY * unit));
+        animate(Math.max(projects, pending + delta), 'linear');
+      }
+      lastDirection = direction;
+    }, {passive: false});
+
+    window.addEventListener('keydown', event => {
+      if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) stop();
+    });
+    ['pointerdown', 'touchstart', 'resize', 'blur'].forEach(type =>
+      window.addEventListener(type, stop, {passive: true}));
+    document.addEventListener('visibilitychange', stop);
+    motionPreference.addEventListener('change', stop);
+    return {stop, scrollToSection};
+  };
+
+  pageScroll = createPageScroll();
   const navLinks = Array.from(document.querySelectorAll('.navbar a'));
 
   navLinks.forEach(anchor => {
@@ -39,7 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
       if (target) {
-        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        if (pageScroll) pageScroll.scrollToSection(target);
+        else target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
       }
     });
   });
