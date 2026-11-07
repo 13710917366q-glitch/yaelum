@@ -5,3 +5,6 @@ node_modules/
 .env.*
 screenshots/
 deployment-evidence/
+/scripts/cloudflare-client.mjs
+/scripts/verify-live.mjs
+/上线与费用核验.md

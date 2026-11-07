@@ -2,7 +2,7 @@
 
 正式地址：https://yaelumworks.art/
 
-Cloudflare Pages 从 `codex/yaelumworks-pages` 分支自动部署。构建命令为 `node scripts/build.mjs`，输出目录为 `dist`。原来的 `main` 分支与旧版站点保留。
+Cloudflare Pages 当前通过官方 Wrangler 直接发布；源代码保存在 GitHub 的 `codex/yaelumworks-pages` 分支。构建命令为 `node scripts/build.mjs`，输出目录为 `dist`。原来的 `main` 分支与旧版站点保留。GitHub 自动部署尚未启用，推送代码不会自动更新网站。
 
 ## 视频
 
