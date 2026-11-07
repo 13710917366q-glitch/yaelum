@@ -190,19 +190,22 @@ document.addEventListener('DOMContentLoaded', () => {
     .map(link => document.querySelector(link.getAttribute('href')))
     .filter(Boolean);
 
-  if ('IntersectionObserver' in window) {
-    const navObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) setActiveNav(entry.target.id);
-      });
-    }, {
-      rootMargin: '-32% 0px -58% 0px',
-      threshold: 0
-    });
-    navSections.forEach(section => navObserver.observe(section));
-  } else {
-    setActiveNav('begin');
-  }
+  // A compact About section never reaches the upper viewport observation band.
+  // At the document end it is the current section, even below that band.
+  let navFrame = 0;
+  const updateActiveNav = () => {
+    navFrame = 0;
+    const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+    const current = atEnd ? navSections[navSections.length - 1] :
+      navSections.filter(section => section.getBoundingClientRect().top <= window.innerHeight * 0.38).pop();
+    if (current) setActiveNav(current.id);
+  };
+  const queueActiveNav = () => {
+    if (!navFrame) navFrame = requestAnimationFrame(updateActiveNav);
+  };
+  window.addEventListener('scroll', queueActiveNav, {passive: true});
+  window.addEventListener('resize', queueActiveNav, {passive: true});
+  updateActiveNav();
 
   // Prevent image/video drag
   document.querySelectorAll('img, video').forEach(el =>

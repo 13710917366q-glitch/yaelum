@@ -460,8 +460,9 @@ html.js #showreel:not(.is-visible) #cover-container {
 }
 
 #about {
-  height: auto;       /* 高度自适应内容 */
-  padding: 20px 20px 120px 20px; /* 上 20px，右 20px，下 80px，左 20px */
+  height: auto;
+  min-height: 0;
+  padding: 72px 20px 80px;
 }
 
 
@@ -590,6 +591,10 @@ html.js #showreel:not(.is-visible) #cover-container {
 
   .about-container {
     flex-direction: column;
+  }
+
+  #about {
+    padding: 56px 20px;
   }
 
   .about-text {
